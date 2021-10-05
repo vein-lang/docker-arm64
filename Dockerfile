@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:6.0.100-preview.2-focal-amd64
+FROM mcr.microsoft.com/dotnet/sdk:6.0.100-preview.1-focal-amd64
 
 LABEL TITLE="Vien Lang Build Container"
 LABEL DESCRIPTION="For build IshtarVM in arm64 with crossfs"
