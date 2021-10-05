@@ -5,6 +5,7 @@ LABEL DESCRIPTION="For build IshtarVM in arm64 with crossfs"
 LABEL VERSION="1.0"
 
 RUN apt-get update
+RUN apt-get install apt-utils
 RUN apt-get install -y clang zlib1g-dev libkrb5-dev libssl-dev \
  qemu qemu-user-static binfmt-support \
  debootstrap crossbuild-essential-arm64 \
