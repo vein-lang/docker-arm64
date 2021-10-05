@@ -10,8 +10,27 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v1
+    - name: Docker Setup QEMU
+      uses: docker/setup-qemu-action@v1.2.0
+    - name: Set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v1
+    - name: Cache Docker layers
+      uses: actions/cache@v2
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-
     - run: docker login ghcr.io -u code-maid -p ${{ secrets.PAT }}
-    - run: docker build . --file Dockerfile --tag ghcr.io/vein-lang/ubuntu18.04-with-crossroot-arm64:$(date +%s)
-    - run: docker push ghcr.io/vein-lang/ubuntu18.04-with-crossroot-arm64
+    - name: Build and push
+      id: docker_build
+      uses: docker/build-push-action@v2
+      with:
+        context: ./
+        file: ./Dockerfile
+        builder: ${{ steps.buildx.outputs.name }}
+        push: true
+        tags: ghcr.io/${{ github.repository_owner }}/ubuntu18.04-with-crossroot-arm64:latest
+        cache-from: type=local,src=/tmp/.buildx-cache
+        cache-to: type=local,dest=/tmp/.buildx-cache
